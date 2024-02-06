@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { login as storeLogin } from "../store/authSlice";
 import { useDispatch } from "react-redux";
-import { Button, Input, Logo } from "../components";
-import { authService } from "../appwrite/auth";
+import { Button, Input, Logo } from "../components/index";
+import authService from "../appwrite/auth";
 import { useForm } from "react-hook-form";
 
 function Login() {
@@ -75,10 +75,9 @@ function Login() {
                 required: true,
               })}
             />
-            <Button
-            type="submit"
-            className="w-full"
-            >Submit</Button>
+            <Button type="submit" className="w-full">
+              Submit
+            </Button>
           </div>
         </form>
       </div>
