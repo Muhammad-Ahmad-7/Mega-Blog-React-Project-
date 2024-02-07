@@ -17,11 +17,13 @@ function Signup() {
     setError("");
     try {
       const userData = await authService.createAccount(data);
+      console.log("User Data" + userData);
       if (userData) {
         const userData = await authService.getCurrentUser();
         if (userData) {
           dispatch(login(userData));
           navigate("/");
+          console.log("User created successfully");
         }
       }
     } catch (error) {
@@ -79,7 +81,7 @@ function Signup() {
                 label="Password: "
                 type="password"
                 placeholder="Enter Your Password"
-                {...register("password, ", {
+                {...register("password", {
                   required: true,
                 })}
               />

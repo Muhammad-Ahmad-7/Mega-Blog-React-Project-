@@ -1,43 +1,56 @@
-import { Outlet } from "react-router-dom";
-import { Footer, Header } from "./components";
-import { useEffect, useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import authService from "./appwrite/auth";
 import { login, logout } from "./store/authSlice";
+import { Footer, Header } from "./components";
+import { Outlet } from "react-router-dom";
 
 function App() {
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
+
   useEffect(() => {
     authService
       .getCurrentUser()
       .then((userData) => {
         if (userData) {
-          dispatch(() => login({ userData }));
+          dispatch(login({ userData }));
         } else {
           dispatch(logout());
-          console.log(userData);
         }
       })
       .finally(() => setLoading(false));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (!loading) {
-    return (
-      <div className="min-h-screen flex flex-wrap content-between bg-gray-400">
-        <div className="w-full block">
-          <Header />
-          <main>
-            TODO: <Outlet />
-          </main>
-          <Footer />
-        </div>
+  return !loading ? (
+    <div className="min-h-screen flex flex-wrap content-between bg-gray-400">
+      <div className="w-full block">
+        <Header />
+        <main>
+          {/* TODO:  */}
+          <Outlet />
+        </main>
+        <Footer />
       </div>
-    );
-  } else {
-    return <div>Loading...</div>;
-  }
+    </div>
+  ) : (
+    <div>Loading Your Data...</div>
+  );
+
+  // return (
+  //   <div className="min-h-screen flex flex-wrap content-between bg-gray-400">
+  //     <div className="w-full block">
+  //       {" "}
+  //       {/* <Header /> */}
+  //       <h1>This is Header</h1>
+  //       <main>
+  //         TODO: <Outlet />
+  //       </main>
+  //       <Footer />
+  //     </div>
+  //   </div>
+  // );
 }
 
 export default App;

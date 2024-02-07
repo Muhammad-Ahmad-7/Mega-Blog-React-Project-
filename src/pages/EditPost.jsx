@@ -7,10 +7,14 @@ function EditPost() {
   const { slug } = useParams();
   const naviagate = useNavigate();
   useEffect(() => {
+    console.log(slug);
     if (slug) {
+      console.log("In Slug of Edit Post");
       appwriteService.getPost(slug).then((post) => {
         if (post) {
+          console.log("In f of Edit post");
           setPost(post);
+          console.log(post.$id);
         }
       });
     } else {

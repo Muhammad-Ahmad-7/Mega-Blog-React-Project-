@@ -18,7 +18,8 @@ export class Service {
 
   async createPost({ title, slug, content, featuredImage, status, userId }) {
     try {
-      await this.databases.createDocument(
+      console.log("In Create Post");
+      return await this.databases.createDocument(
         conf.appwriteDatabaseId,
         conf.appwriteCollectionId,
         slug,
@@ -70,16 +71,16 @@ export class Service {
   }
 
   async getPost(slug) {
+    console.log(slug);
     try {
-      const response = await this.databases.getDocument(
+      return await this.databases.getDocument(
         conf.appwriteDatabaseId,
         conf.appwriteCollectionId,
         slug
       );
-      return response;
     } catch (error) {
       console.log("Appwrite service :: getPost :: error", error);
-      return null;
+      return false;
     }
   }
 

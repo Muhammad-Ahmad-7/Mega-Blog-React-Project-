@@ -4,14 +4,24 @@ import { Container, PostCard } from "../components";
 
 function Home() {
   const [posts, setPosts] = useState([]);
+
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
-    appwriteService.getPosts().then((posts) => {
-      if (posts) {
+    appwriteService
+      .getPosts()
+      .then((posts) => {
         setPosts(posts.documents);
-      }
-    });
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        setIsLoading(true); // Handle errors gracefully
+      });
   }, []);
-  if (posts.length === 0) {
+
+  // Render a loading indicator while data is being fetched
+  if (isLoading) {
     return (
       <div className="w-full py-8 mt-4 text-center">
         <Container>
@@ -31,13 +41,15 @@ function Home() {
     <div className="w-full py-8">
       <Container>
         <div className="flex flex-wrap">
-          {posts.map((post) => (
-            <div key={post.$id} className="p-2 w-1/4">
-              {/* TODO: */}
-              {/* <PostCard post={post} /> */}
-              <PostCard {...post} />
+          {posts && posts.length > 0 && (
+            <div className="flex flex-wrap">
+              {posts.map((post) => (
+                <div key={post.$id} className="p-2 w-1/4">
+                  <PostCard {...post} />
+                </div>
+              ))}
             </div>
-          ))}
+          )}
         </div>
       </Container>
     </div>

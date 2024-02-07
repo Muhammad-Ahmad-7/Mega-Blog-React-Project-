@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { Button, Input, RTE, Select } from "../../components/index";
 import appwriteService from "../../appwrite/config";
 import { useSelector } from "react-redux";
-import { React, useCallback } from "react";
+import { React, useCallback, useEffect } from "react";
 
 function PostForm({ post }) {
   const { control, register, handleSubmit, setValue, getValues, watch } =
@@ -22,18 +22,21 @@ function PostForm({ post }) {
   const userData = useSelector((state) => state.auth.userData);
 
   const submit = async (data) => {
+    console.log("In Submit");
     //Update Post
     if (post) {
+      console.log("Post Already Exists");
       const file = data.image[0]
         ? await appwriteService.uploadFile(data.image[0])
         : null;
       if (file) {
-        await appwriteService.deleteFile(post.featuredImage);
+        console.log("New File");
+        appwriteService.deleteFile(post.featuredImage);
       }
 
       const dbPost = await appwriteService.updatePost(post.$id, {
         ...data,
-        featuredImage: file ? file.$ : post.featuredImage,
+        featuredImage: file ? file.$id : undefined,
       });
 
       if (dbPost) {
@@ -44,7 +47,6 @@ function PostForm({ post }) {
       const file = data.image[0]
         ? await appwriteService.uploadFile(data.image[0])
         : null;
-
       if (file) {
         const fileId = file.$id;
         data.featuredImage = fileId;
@@ -70,7 +72,7 @@ function PostForm({ post }) {
     return "";
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const subscription = watch((value, { name }) => {
       if (name === "title") {
         setValue("slug", slugTransform(value.title), { shouldValidate: true });

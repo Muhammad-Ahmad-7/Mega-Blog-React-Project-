@@ -5,12 +5,14 @@ import conf from "../conf/conf";
 export class AuthService {
   client = new Client();
   account;
+
   constructor() {
     this.client
       .setEndpoint(conf.appwriteUrl)
       .setProject(conf.appwriteProjectId);
     this.account = new Account(this.client);
   }
+
   async createAccount({ email, password, name }) {
     try {
       const userAccount = await this.account.create(
@@ -20,8 +22,10 @@ export class AuthService {
         name
       );
       if (userAccount) {
-        this.login(email, password);
+        console.log("In if of userAccount in createAccount");
+        return this.login({ email, password });
       } else {
+        console.log("User Account", userAccount);
         return userAccount;
       }
     } catch (error) {
@@ -29,21 +33,31 @@ export class AuthService {
     }
   }
 
-  async login(email, password) {
+  async login({ email, password }) {
+    console.log("In Login");
     try {
-      const userAccount = await this.account.createSession(email, password);
-      return userAccount;
+      return await this.account.createEmailSession(email, password);
     } catch (error) {
       throw error;
     }
   }
 
+  // async getCurrentUser() {
+  //   try {
+  //     return await this.account.get();
+  //   } catch (error) {
+  //     console.log("Appwrite serive :: getCurrentUser :: error", error);
+  //   }
+  //   return null;
+  // }
+
   async getCurrentUser() {
     try {
       return await this.account.get();
     } catch (error) {
-      console.log("Appwrite serive :: getCurrentUser :: error", error);
+      console.log("Appwrite service :: getCurrentUser :: error", error);
     }
+
     return null;
   }
 
